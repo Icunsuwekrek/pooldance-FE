@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import SkeletonDashboard from "@/components/loading/SkeletonDashboard"
 import { Line } from "react-chartjs-2"
 import {
   Chart as ChartJS,
@@ -17,13 +18,13 @@ ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip,
 export default function AdminDashboardPage() {
   const [currentDate, setCurrentDate] = useState("")
   const [currentTime, setCurrentTime] = useState("")
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const updateDateTime = () => {
       const now = new Date()
-
-      const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
-      const months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
       const weekday = days[now.getDay()]
       const day = now.getDate()
@@ -34,14 +35,18 @@ export default function AdminDashboardPage() {
       const timeString = now.toLocaleTimeString("en-GB", {
         hour: "2-digit",
         minute: "2-digit",
-        second: "2-digit",
       })
       setCurrentTime(timeString)
     }
 
     updateDateTime()
     const interval = setInterval(updateDateTime, 1000)
-    return () => clearInterval(interval)
+    const timeout = setTimeout(() => setLoading(false), 1500)
+
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
   }, [])
 
   const data = {
@@ -80,6 +85,8 @@ export default function AdminDashboardPage() {
     { name: "Diana Prince", type: "Standard", total: 220 },
   ]
 
+  if (loading) return <SkeletonDashboard />
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -98,13 +105,11 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* ChartJS Diagram */}
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">Visitor Chart</h2>
           <Line data={data} options={options} />
         </div>
 
-        {/* Stats */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">Statistics</h2>
@@ -117,7 +122,6 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Top Users Table */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h2 className="text-lg font-semibold text-gray-700 mb-4">Top Users</h2>
         <div className="overflow-x-auto">

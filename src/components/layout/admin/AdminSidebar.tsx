@@ -10,6 +10,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
+import Image from "next/image"
 
 const menuItems = [
   { label: "Dashboard", href: "/dashboard/admin", icon: <Home size={18} /> },
@@ -24,11 +25,28 @@ export default function AdminSidebar() {
     item.label.toLowerCase().includes(search.toLowerCase())
   )
 
+  // Dummy user info
+  const user = {
+    name: "John Doe",
+    role: "Admin",
+    image: "/images/logouser2.png", // HARUS ada di public/images/
+  }
+
   return (
     <aside className="fixed top-0 left-0 h-screen w-64 bg-white shadow-md border-r z-50 flex flex-col justify-between">
-      {/* Logo */}
-      <div className="px-6 py-4 border-b">
-        <h1 className="text-xl font-bold text-purple-700">Admin Panel</h1>
+      {/* User Info */}
+      <div className="flex items-center gap-3 px-6 py-4 border-b">
+        <Image
+          src={user.image}
+          alt="Profile"
+          width={40}
+          height={40}
+          className="rounded-full object-cover"
+        />
+        <div>
+          <h2 className="text-base font-semibold text-gray-800">{user.name}</h2>
+          <p className="text-sm text-gray-500">{user.role}</p>
+        </div>
       </div>
 
       {/* Search + Menu */}
@@ -66,7 +84,7 @@ export default function AdminSidebar() {
   )
 }
 
-// Item component
+// Sidebar Item Component
 function SidebarItem({
   href,
   icon,
