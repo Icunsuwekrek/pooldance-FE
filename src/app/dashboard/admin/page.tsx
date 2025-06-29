@@ -101,7 +101,7 @@ export default function AdminDashboardPage() {
         {/* ChartJS Diagram */}
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">Visitor Chart</h2>
-          {/* <Line data={data} options={options} /> */}
+          <Line data={data} options={options} />
         </div>
 
         {/* Stats */}
