@@ -5,6 +5,9 @@ import {
   Users,
   Settings,
   LogOut,
+  Calendar,
+  ImageIcon,
+  Ticket,
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -16,6 +19,9 @@ const menuItems = [
   { label: "Dashboard", href: "/dashboard/admin", icon: <Home size={18} /> },
   { label: "Users", href: "/dashboard/admin/users", icon: <Users size={18} /> },
   { label: "Settings", href: "/dashboard/admin/settings", icon: <Settings size={18} /> },
+  { label: "Event", href: "/dashboard/admin/event", icon: <Calendar size={18} /> },
+  { label: "Update Media", href: "/dashboard/admin/media", icon: <ImageIcon size={18} /> },
+  { label: "Ticketing System", href: "/dashboard/admin/ticketing", icon: <Ticket size={18} /> },
 ]
 
 export default function AdminSidebar() {
@@ -29,7 +35,7 @@ export default function AdminSidebar() {
   const user = {
     name: "John Doe",
     role: "Admin",
-    image: "/images/logouser2.png", // HARUS ada di public/images/
+    image: "/images/loginuser2.png", // HARUS ada di public/images/
   }
 
   return (
