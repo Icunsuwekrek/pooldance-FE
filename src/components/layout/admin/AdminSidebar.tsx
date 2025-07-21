@@ -1,14 +1,6 @@
 "use client"
 
-import {
-  Home,
-  Users,
-  Settings,
-  LogOut,
-  Calendar,
-  ImageIcon,
-  Ticket,
-} from "lucide-react"
+import { Home, Users, Settings, Calendar, Image as ImageIcon, Ticket, GraduationCap, LogOut } from "lucide-react";
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,14 +8,20 @@ import { useState } from "react"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 
-const menuItems = [
+export const menuItems = [
   { label: "Dashboard", href: "/dashboard/admin", icon: <Home size={18} /> },
   { label: "Users", href: "/dashboard/admin/users", icon: <Users size={18} /> },
   { label: "Settings", href: "/dashboard/admin/settings", icon: <Settings size={18} /> },
   { label: "Event", href: "/dashboard/admin/event", icon: <Calendar size={18} /> },
-  { label: "Update Media", href: "/dashboard/admin/media", icon: <ImageIcon size={18} /> },
+  {
+    label: "Update Media",
+    href: "/dashboard/admin/media",
+    icon: <ImageIcon size={18} />,
+    activeIcon: <ImageIcon size={18} className="text-primary" />
+  },
   { label: "Ticketing System", href: "/dashboard/admin/ticketing", icon: <Ticket size={18} /> },
-]
+  { label: "Class", href: "/dashboard/admin/class", icon: <GraduationCap size={18} /> },
+];
 
 export default function AdminSidebar() {
   const [search, setSearch] = useState("")

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import CreateEventModal from "./components/CreateEventModal";
+import UpdateEventModal from "./components/UpdateEventModal";
 
 export default function EventsPage() {
     const [search, setSearch] = useState("");
@@ -11,25 +12,24 @@ export default function EventsPage() {
         {
             id: 1,
             title: "Beach Pole Dance",
-            date: "25/09/2027",
+            date: "2027-09-25",
             location: "Beach Walk",
             description: "Lorem ipsum dolor sit amet.",
+            startTime: "09:00",
+            endTime: "10:00",
         },
         {
             id: 2,
-            title: "Beach Pole Dance",
-            date: "25/09/2027",
-            location: "Beach Walk",
-            description: "Lorem ipsum dolor sit amet.",
-        },
-        {
-            id: 3,
-            title: "Beach Pole Dance",
-            date: "25/09/2027",
-            location: "Beach Walk",
-            description: "Lorem ipsum dolor sit amet.",
+            title: "Yoga in the Park",
+            date: "2027-10-01",
+            location: "Central Park",
+            description: "Sunrise yoga session.",
+            startTime: "06:30",
+            endTime: "08:00",
         },
     ]);
+
+    const [editingEvent, setEditingEvent] = useState<any | null>(null);
 
     const today = new Date().toLocaleDateString("en-GB", {
         weekday: "long",
@@ -47,6 +47,13 @@ export default function EventsPage() {
         if (confirmed) {
             setEvents((prev) => prev.filter((e) => e.id !== id));
         }
+    };
+
+    const handleUpdateSuccess = (updated: any) => {
+        setEvents((prev) =>
+            prev.map((e) => (e.id === updated.id ? { ...updated } : e))
+        );
+        setEditingEvent(null);
     };
 
     return (
@@ -70,9 +77,7 @@ export default function EventsPage() {
                 <h2 className="text-xl font-semibold mb-4">Events</h2>
 
                 {filteredEvents.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
-                        No events found
-                    </div>
+                    <div className="text-center py-8 text-gray-500">No events found</div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="min-w-full border-collapse rounded-md overflow-hidden">
@@ -91,13 +96,18 @@ export default function EventsPage() {
                                     <tr key={event.id} className="border-t text-sm">
                                         <td className="py-2 px-4">{idx + 1}.</td>
                                         <td className="py-2 px-4">{event.title}</td>
-                                        <td className="py-2 px-4">{event.date}</td>
+                                        <td className="py-2 px-4">
+                                            {new Date(event.date).toLocaleDateString("en-GB")}
+                                        </td>
                                         <td className="py-2 px-4">{event.location}</td>
-                                        <td className="py-2 px-4 truncate max-w-[200px]">{event.description}</td>
+                                        <td className="py-2 px-4 truncate max-w-[200px]">
+                                            {event.description}
+                                        </td>
                                         <td className="py-2 px-4 flex gap-2">
                                             <Button
                                                 size="sm"
                                                 className="bg-emerald-400 hover:bg-emerald-500 text-white"
+                                                onClick={() => setEditingEvent(event)}
                                             >
                                                 Edit
                                             </Button>
@@ -117,13 +127,15 @@ export default function EventsPage() {
                 )}
             </div>
 
-            {filteredEvents.length > 0 && (
-                <div className="flex justify-end mt-6 space-x-2 text-sm">
-                    <button className="px-3 py-1 text-gray-500 rounded hover:bg-gray-100">Previous</button>
-                    <button className="px-3 py-1 text-white bg-purple-600 rounded">1</button>
-                    <button className="px-3 py-1 text-gray-500 rounded hover:bg-gray-100">2</button>
-                    <button className="px-3 py-1 text-gray-500 rounded hover:bg-gray-100">Next</button>
-               </div>
+            {editingEvent && (
+                <UpdateEventModal
+                    event={editingEvent}
+                    open={!!editingEvent}
+                    onOpenChange={(val) => {
+                        if (!val) setEditingEvent(null);
+                    }}
+                    onSuccess={handleUpdateSuccess}
+                />
             )}
         </div>
     );

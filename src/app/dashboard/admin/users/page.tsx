@@ -2,16 +2,40 @@
 
 import { useState } from "react";
 import CreateUserModal from "./components/CreateUserModal";
+import UserFormModal from "./components/UpdateUserModal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default function UserPage() {
     const [search, setSearch] = useState("");
     const [selectedUser, setSelectedUser] = useState<any | null>(null);
+    const [openEdit, setOpenEdit] = useState(false);
+
     const [users, setUsers] = useState([
-        { id: 1, name: "Icun", role: "User", email: "Icun@gmail.com", password: "**********", phone: "+62 12345678902" },
-        { id: 2, name: "Jendra", role: "Admin", email: "Jendra@gmail.com", password: "**********", phone: "+62 12345678902" },
-        { id: 3, name: "Rafli", role: "User", email: "Rafli@gmail.com", password: "**********", phone: "+62 12345678902" },
+        {
+            id: 1,
+            name: "Icun",
+            role: "User",
+            email: "Icun@gmail.com",
+            password: "**********",
+            phone: "+62 12345678902",
+        },
+        {
+            id: 2,
+            name: "Jendra",
+            role: "Admin",
+            email: "Jendra@gmail.com",
+            password: "**********",
+            phone: "+62 12345678902",
+        },
+        {
+            id: 3,
+            name: "Rafli",
+            role: "User",
+            email: "Rafli@gmail.com",
+            password: "**********",
+            phone: "+62 12345678902",
+        },
     ]);
 
     const today = new Date().toLocaleDateString("en-GB", {
@@ -34,9 +58,12 @@ export default function UserPage() {
         }
     };
 
-    if (selectedUser) {
-        return null;
-    }
+    const handleUpdateSuccess = (updatedUser: any) => {
+        setUsers((prev) =>
+            prev.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+        );
+        setSelectedUser(null);
+    };
 
     return (
         <div className="space-y-6">
@@ -61,9 +88,7 @@ export default function UserPage() {
                 <h2 className="text-xl font-semibold mb-4">User</h2>
 
                 {filteredUsers.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
-                        No users found
-                    </div>
+                    <div className="text-center py-8 text-gray-500">No users found</div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="min-w-full border-collapse rounded-md overflow-hidden">
@@ -91,7 +116,10 @@ export default function UserPage() {
                                             <Button
                                                 size="sm"
                                                 className="bg-emerald-400 hover:bg-emerald-500 text-white"
-                                                onClick={() => setSelectedUser(user)}
+                                                onClick={() => {
+                                                    setSelectedUser(user);
+                                                    setOpenEdit(true);
+                                                }}
                                             >
                                                 Edit
                                             </Button>
@@ -111,12 +139,32 @@ export default function UserPage() {
                 )}
             </div>
 
+            {selectedUser && (
+                <UserFormModal
+                    user={selectedUser}
+                    open={openEdit}
+                    onOpenChange={(val) => {
+                        setOpenEdit(val);
+                        if (!val) setSelectedUser(null);
+                    }}
+                    onSuccess={handleUpdateSuccess}
+                />
+            )}
+
             {filteredUsers.length > 0 && (
                 <div className="flex justify-end mt-6 space-x-2 text-sm">
-                    <button className="px-3 py-1 text-gray-500 rounded hover:bg-gray-100">Previous</button>
-                    <button className="px-3 py-1 text-white bg-purple-600 rounded">1</button>
-                    <button className="px-3 py-1 text-gray-500 rounded hover:bg-gray-100">2</button>
-                    <button className="px-3 py-1 text-gray-500 rounded hover:bg-gray-100">Next</button>
+                    <button className="px-3 py-1 text-gray-500 rounded hover:bg-gray-100">
+                        Previous
+                    </button>
+                    <button className="px-3 py-1 text-white bg-purple-600 rounded">
+                        1
+                    </button>
+                    <button className="px-3 py-1 text-gray-500 rounded hover:bg-gray-100">
+                        2
+                    </button>
+                    <button className="px-3 py-1 text-gray-500 rounded hover:bg-gray-100">
+                        Next
+                    </button>
                 </div>
             )}
         </div>
