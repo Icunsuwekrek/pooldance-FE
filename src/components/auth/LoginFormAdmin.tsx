@@ -1,18 +1,49 @@
-"use client"
+"use client";
 
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import Image from "next/image"
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { login } from "@/services/AuthService";
 
 export default function LoginFormAdmin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Email dan password wajib diisi");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const { token, role } = await login(email, password);
+
+      localStorage.setItem("token", token);
+
+      if (role === "admin") {
+        router.push("/dashboard/admin");
+      } else {
+        alert("Bukan akun admin");
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.error || "Login gagal");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-200 px-4">
-      {/* Card container */}
+    <div className="flex items-center justify-center min-h-screen px-4 bg-gray-200">
       <div className="flex flex-col md:flex-row w-full max-w-5xl min-h-[600px] rounded-xl overflow-hidden shadow-lg bg-white">
         
-        {/* Gambar di atas saat mobile, kanan saat desktop */}
-        <div className="w-full md:w-1/2 relative h-40 md:h-auto">
+        {/* Gambar */}
+        <div className="relative w-full h-40 md:w-1/2 md:h-auto">
           <Image
             src="/images/loginuser2.png"
             alt="Admin Art"
@@ -21,8 +52,8 @@ export default function LoginFormAdmin() {
           />
         </div>
 
-        {/* Form section */}
-        <div className="w-full md:w-1/2 p-10 flex flex-col justify-center">
+        {/* Form */}
+        <div className="flex flex-col justify-center w-full p-10 md:w-1/2">
           <div className="w-full max-w-md mx-auto space-y-6">
             <div>
               <h2 className="text-2xl font-bold">Welcome Back 👋</h2>
@@ -34,11 +65,21 @@ export default function LoginFormAdmin() {
             <div className="space-y-4">
               <div>
                 <label className="block mb-1 text-sm font-medium">Email</label>
-                <Input type="email" placeholder="admin@mail.com" />
+                <Input
+                  type="email"
+                  placeholder="admin@mail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
               <div>
                 <label className="block mb-1 text-sm font-medium">Password</label>
-                <Input type="password" placeholder="••••••••" />
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
 
               <div className="flex justify-between text-sm">
@@ -47,12 +88,16 @@ export default function LoginFormAdmin() {
                 </Link>
               </div>
 
-              <Button className="w-full bg-purple-600 text-white hover:bg-purple-700">
-                Sign In
+              <Button
+                className="w-full text-white bg-purple-600 hover:bg-purple-700"
+                onClick={handleLogin}
+                disabled={loading}
+              >
+                {loading ? "Signing In..." : "Sign In"}
               </Button>
 
               {/* Social login */}
-              <div className="flex items-center gap-2 text-sm text-muted-foreground my-4">
+              <div className="flex items-center gap-2 my-4 text-sm text-muted-foreground">
                 <div className="flex-grow border-t" />
                 or continue with
                 <div className="flex-grow border-t" />
@@ -63,7 +108,7 @@ export default function LoginFormAdmin() {
                 <Button variant="outline" className="w-full">Sign in with Facebook</Button>
               </div>
 
-              <p className="text-xs text-center text-muted-foreground mt-4">
+              <p className="mt-4 text-xs text-center text-muted-foreground">
                 Don’t have an account?{" "}
                 <Link href="#" className="text-blue-500 hover:underline">Sign up</Link>
               </p>
@@ -72,5 +117,5 @@ export default function LoginFormAdmin() {
         </div>
       </div>
     </div>
-  )
+  );
 }

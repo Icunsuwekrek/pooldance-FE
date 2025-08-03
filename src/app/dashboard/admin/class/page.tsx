@@ -29,7 +29,6 @@ export default function EventsPage() {
         },
     ]);
 
-    const [editingEvent, setEditingEvent] = useState<any | null>(null);
     const router = useRouter();
 
     const today = new Date().toLocaleDateString("en-GB", {
@@ -48,13 +47,6 @@ export default function EventsPage() {
         if (confirmed) {
             setEvents((prev) => prev.filter((e) => e.id !== id));
         }
-    };
-
-    const handleUpdateSuccess = (updated: any) => {
-        setEvents((prev) =>
-            prev.map((e) => (e.id === updated.id ? { ...updated } : e))
-        );
-        setEditingEvent(null);
     };
 
     return (
@@ -80,15 +72,15 @@ export default function EventsPage() {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-                <h2 className="text-xl font-semibold mb-4">Class</h2>
+            <div className="p-6 bg-white shadow-md rounded-xl">
+                <h2 className="mb-4 text-xl font-semibold">Class</h2>
 
                 {filteredEvents.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">No class found</div>
+                    <div className="py-8 text-center text-gray-500">No class found</div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="min-w-full border text-sm text-left">
-                            <thead className="bg-purple-100 text-gray-700">
+                        <table className="min-w-full text-sm text-left border">
+                            <thead className="text-gray-700 bg-purple-100">
                                 <tr>
                                     <th className="px-4 py-2 border">No</th>
                                     <th className="px-4 py-2 border">Class</th>
@@ -116,14 +108,16 @@ export default function EventsPage() {
                                             <div className="flex gap-2">
                                                 <Button
                                                     size="sm"
-                                                    className="bg-emerald-400 hover:bg-emerald-500 text-white"
-                                                    onClick={() => setEditingEvent(event)}
+                                                    className="text-white bg-emerald-400 hover:bg-emerald-500"
+                                                    onClick={() =>
+                                                        router.push(`/dashboard/admin/class/components/update?id=${event.id}`)
+                                                    }
                                                 >
                                                     Edit
                                                 </Button>
                                                 <Button
                                                     size="sm"
-                                                    className="bg-red-500 hover:bg-red-600 text-white"
+                                                    className="text-white bg-red-500 hover:bg-red-600"
                                                     onClick={() => handleDelete(event.id)}
                                                 >
                                                     Delete
@@ -137,18 +131,6 @@ export default function EventsPage() {
                     </div>
                 )}
             </div>
-
-            {/* Ganti Modal Edit jadi tombol redirect */}
-            {editingEvent && (
-                <Button
-                    onClick={() =>
-                        router.push("/dashboard/admin/class/components/UpdateClassModal")
-                    }
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                    Go to Update Class Page
-                </Button>
-            )}
         </div>
     );
 }
